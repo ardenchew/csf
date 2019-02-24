@@ -1,11 +1,5 @@
 #include <unistd.h>
-#include <stdio.h>
 
-/* Format of output line:
-aaaa  hh hh hh hh hh hh hh hh  cccccccc\n
-*/
-
-/* You may want to use this */
 char hex2asc[17]="0123456789ABCDEF";
 
 void write_hex(int a, int b)
@@ -31,26 +25,35 @@ void write_hex(int a, int b)
 int main()
 {
   int a = 0; //address decimal value
-  unsigned char c[8];
-  int h;
-  
+  unsigned char c[8]; //next 8 characters read in
   int n = read(0,c,8);
 
-  while (n > 0) {
+  while (n != 0) {
+    //error checking
+    if (n == -1) {
+      write(1, "Error", 5);
+      continue;
+    }
+
+    //address output
     write_hex(a,4);
     write(1, "  ", 2);
     
+    //hh output
     for (int i = 0; i < n; i++) {
-      h = c[i];
-      write_hex(h,2);
+      write_hex(c[i],2);
       write(1, " ", 1);
 
+      //conversion of non printable chars
       if ((c[i] > 126) || (c[i] < 32)) 
         c[i] = '.';
     }
    
+    //print remaining spaces
     for (int i = 0; i < (3*(8-n)+1); i++)
       write(1, " ", 1);
+
+    //print cached chars
     write(1, c, n);
     write(1, "\n", 1);
     
