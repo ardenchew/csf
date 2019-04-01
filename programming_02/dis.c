@@ -1,6 +1,5 @@
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdio.h>
 
 const char hex2asc[17] = "0123456789ABCDEF";
 const char *mnemonics[32] = {"EXT", "LDA", "LDI", "STA",
@@ -27,10 +26,14 @@ int main(int argc, const char* argv[]) {
         return 2;
     }
 
-    unsigned char *c;
+    int byte_count = 0;
+    unsigned char c[1];
     int n = read(filedesc,c,1);
+    
+    while ((n != 0) && (byte_count < 256)) {
 
-    while (n != 0) {
+        byte_count++;
+
         int encoding = *c;
         int opcode = encoding >> 4;
         int operand = encoding & 15;
@@ -53,6 +56,6 @@ int main(int argc, const char* argv[]) {
         write(1, "\n", 1);
         n = read(filedesc,c,1);
     }
-
+ 
     return 0;
 }
