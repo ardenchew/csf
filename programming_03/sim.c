@@ -7,9 +7,9 @@
 
 int main(int argc, const char* argv[]) {
 
-    if ((argc > 3) || (argc == 2))
+    if ((argc > 3) || (argc == 2)) 
         return get_error(1,1);
-    
+
     int readfile = (argc == 3) ? open(argv[1], O_RDONLY): 0;
     int writefile = (argc == 3) ? open(argv[2],O_WRONLY): 1;
 

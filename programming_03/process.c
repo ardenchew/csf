@@ -83,35 +83,35 @@ int process(int encodings[], int byte_count, int writefile) {
                 break;
             case 6: //SUB
                 if (operand >= byte_count)
-                    get_error(5,1);
+                    return get_error(5,1);
                 acc += (encodings[operand] ^ 255) + 1;
                 set_carry = 1;
                 break;
             case 7: //JMP
                 if (operand >= byte_count) 
-                    get_error(4,1);
+                    return get_error(4,1);
                 pc = operand - 1;
                 break;
             case 8: //JMZ
                 if (zero_flag) {
                     if (operand >= byte_count)
-                        get_error(4,1);
+                        return get_error(4,1);
                     pc = operand - 1;
                 }
                 break;
             case 9: //AND
                 if (operand >= byte_count)
-                    get_error(5,1);
+                    return get_error(5,1);
                 acc &= encodings[operand];
                 break;
             case 10: //IOR
                 if (operand >= byte_count)
-                    get_error(5,1);
+                    return get_error(5,1);
                 acc |= encodings[operand];
                 break;
             case 11: //XOR
                 if (operand >= byte_count)
-                    get_error(5,1);
+                    return get_error(5,1);
                 acc ^= encodings[operand];
                 break;
             case 12: //ADL
@@ -121,13 +121,13 @@ int process(int encodings[], int byte_count, int writefile) {
                 break;
             case 13: //ADC
                 if (operand >= byte_count)
-                    get_error(5,1);
+                    return get_error(5,1);
                 acc += encodings[operand] + carry;
                 set_carry = 1;
                 break;
             case 14: //SBB
                 if (operand >= byte_count)
-                    get_error(5,1);
+                    return get_error(5,1);
                 acc += (encodings[operand] ^ 255) + carry;
                 set_carry = 1;
                 break;
@@ -176,6 +176,8 @@ int process(int encodings[], int byte_count, int writefile) {
                         acc = carry ^ (acc >> 7);
                         break;
                     case 14: //JAL
+                        if (acc > byte_count)
+                            return get_error(4,1);
                         acc ^= pc;
                         pc ^= acc;
                         acc ^= pc;
