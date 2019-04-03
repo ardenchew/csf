@@ -84,7 +84,7 @@ int process(int encodings[], int byte_count, int writefile) {
             case 6: //SUB
                 if (operand >= byte_count)
                     get_error(5,1);
-                acc += ~encodings[operand] + 1;
+                acc += (encodings[operand] ^ 255) + 1;
                 set_carry = 1;
                 break;
             case 7: //JMP
@@ -115,7 +115,8 @@ int process(int encodings[], int byte_count, int writefile) {
                 acc ^= encodings[operand];
                 break;
             case 12: //ADL
-                acc = acc + operand; //TODO handle sign extended
+                operand = (operand >> 3) ? operand + 240: operand;
+                acc += operand;
                 set_carry = 1;
                 break;
             case 13: //ADC
@@ -127,16 +128,16 @@ int process(int encodings[], int byte_count, int writefile) {
             case 14: //SBB
                 if (operand >= byte_count)
                     get_error(5,1);
-                acc += ~encodings[operand] + carry;
+                acc += (encodings[operand] ^ 255) + carry;
                 set_carry = 1;
                 break;
             case 15:
                 switch (operand) {
                     case 0: //NEG
-                        acc = ~acc + 1;
+                        acc = (acc ^ 255) + 1;
                         break;
                     case 1: //COM
-                        acc = ~acc;
+                        acc = (acc ^ 255);
                         break;
                     case 2: //CLR
                         acc = 0;
