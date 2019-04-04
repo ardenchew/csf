@@ -26,7 +26,9 @@ int main(int argc, const char* argv[]) {
     int ret = process(encodings, byte_count);
     if (ret)
         return ret;
+    
+    if (argc == 3) 
+        return dump(encodings, byte_count, dumpfile);
 
-    return dump(encodings, byte_count, dumpfile);
-
+    return 0;
 }
