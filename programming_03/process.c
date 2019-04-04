@@ -11,7 +11,9 @@ const char *mnemonics[] = {"EXT", "LDA", "LDI", "STA", "STI",
                              "CLC", "SEC", "TCA", "TVA", "JAL",
                              "NOP", "HLT"};
 
-int process(int encodings[], int byte_count, int writefile) {
+int process(int *encodings, int byte_count) {
+
+    int writefile = 1;
 
     int acc, opcode, operand;
     int pc = 0, halt = 0, set_carry = 0;
