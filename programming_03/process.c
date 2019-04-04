@@ -136,7 +136,7 @@ int process(int *encodings, int byte_count) {
             case 15:
                 switch (operand) {
                     case 0: //NEG
-                        acc = (acc ^ 255) + 1;
+                        acc = ((acc ^ 255) + 1) & 255;
                         break;
                     case 1: //COM
                         acc = (acc ^ 255);
