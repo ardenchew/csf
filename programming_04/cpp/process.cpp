@@ -27,12 +27,18 @@ int process(FILE * rfp, FILE * ofp) {
     if (c == EOF) 
         return write(mem, ofp);
     
-    while (c != EOF) {
+    bool eof_flag = 0;
+
+    while ((c != EOF) && !(eof_flag)) {
 
         //get new line
         while (c != '\n') {
             line += c;
             c = fgetc(rfp);
+            if (c == EOF) {
+                eof_flag = 1;
+                break;
+            }
         }
 
         //remove comments
@@ -49,23 +55,59 @@ int process(FILE * rfp, FILE * ofp) {
         }
        
         //get label
+        bool label_flag = 0;
         int colon_loc = line.find(":");
         std::string cur_label = "";
         if (colon_loc != line.npos) {
             char label_char = line.at(0);
+
+            //check first character for letter
             if (!(isalpha(label_char)))
                 return get_error(7);
+
+            //check for invalid label chars
             for (int i = 1; i < colon_loc; i++) {
                 label_char = line.at(i);
                 if (!(isalpha(label_char) || isdigit(label_char) || (label_char == 95)))
                     return get_error(7);
             }
+
+            //check for duplicate labels
             cur_label = line.substr(0,colon_loc);
             if (label_dict.find(cur_label) != label_dict.end())
                 return get_error(7);
-            line = line.substr(colon_loc + 1);
+
+            //update line and save label
+            if ((colon_loc + 1) >= line.length()) {
+                line = "";
+            } else {
+                line = line.substr(colon_loc + 1);
+            }
             label_dict.insert(std::pair<std::string, unsigned char>(cur_label,mem_counter));
+            label_flag = 1;
+
+            //handle blank labels
+            bool blank_label = 1;
+            for (int i = 0; i < line.length(); i++) {
+                if (!(isspace(line.at(i)))) {
+                    blank_label = 0;
+                    break;
+                }
+            }
+            if (blank_label) {
+                if (mem_counter > 255)
+                    return get_error(4);
+                mem[mem_counter] = 0;
+                mem_counter++;
+                line = "";
+                c = fgetc(rfp);
+                continue;
+            }
+        } else {
+            if (!(isspace(line.at(0))))
+                return get_error(7);
         }
+
 
         //get opcode
         while (isspace(line.at(0))) {
@@ -76,6 +118,22 @@ int process(FILE * rfp, FILE * ofp) {
         for (int i = line.length() - 1; i >= 0; i--) {
             if (isspace(line.at(i)))
                 line.erase(i,1);
+            else
+                break;
+        } 
+
+        if (!(line.length() <= 1)) {
+            while (isspace(line.at(0))) {
+                line = line.substr(1);
+            }
+        }
+
+        //check for invalid argument
+        char arg_char;
+        for (int i = 0; i < line.length(); i++) {
+            arg_char = line.at(i);
+            if (!(isalpha(arg_char) || isdigit(arg_char) || (arg_char == 95) || (arg_char == 43) || (arg_char == 45)))
+                return get_error(6);
         }
 
         //get argument
@@ -96,6 +154,8 @@ int process(FILE * rfp, FILE * ofp) {
 
         //ORG directive
         if (mem_byte < 0) {
+            if (label_flag)
+                return get_error(7);
             mem_counter = (mem_byte * -1) - 1;
             line = "";
             c = fgetc(rfp);
@@ -118,6 +178,8 @@ int process(FILE * rfp, FILE * ofp) {
     for (it = label_args.begin(); it != label_args.end(); it++) {
         if (label_dict.find(it->second) == label_dict.end())
             return get_error(8);
+        if (it->first > 255)
+            return get_error(4);
         mem[it->first] += label_dict.find(it->second)->second;
     }
 
