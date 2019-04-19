@@ -58,7 +58,10 @@ int process(FILE * rfp, FILE * ofp) {
         bool label_flag = 0;
         int colon_loc = line.find(":");
         std::string cur_label = "";
-        if (colon_loc != line.npos) {
+        if (!(isspace(line.at(0)))) {
+            if (colon_loc == line.npos) 
+                return get_error(7);
+
             char label_char = line.at(0);
 
             //check first character for letter
@@ -103,9 +106,6 @@ int process(FILE * rfp, FILE * ofp) {
                 c = fgetc(rfp);
                 continue;
             }
-        } else {
-            if (!(isspace(line.at(0))))
-                return get_error(7);
         }
 
 
