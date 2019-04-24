@@ -102,7 +102,6 @@ int main(int argc, char* argv[]) {
     printf("SAT: %20llu %20llu %20llu\n",counts[5][0],counts[5][1],counts[5][2]);
     printf("TWO: %20llu %20llu %20llu\n",counts[6][0],counts[6][1],counts[6][2]);
 
-
     return 0;
 
 }
