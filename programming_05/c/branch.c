@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include <iostream>
+
 
 void STA(unsigned long int counts[3], unsigned long long int ba,
          unsigned long long int ta, bool T) {
