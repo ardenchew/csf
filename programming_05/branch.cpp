@@ -1,14 +1,13 @@
 #include <stdio.h>
-#include "branch.h"
 
-void STA(unsigned long int counts[3], unsigned long long int ba,
+void STA(unsigned long long int counts[3], unsigned long long int ba,
          unsigned long long int ta, bool T) {
 
     ((ta < ba) == T) ? counts[0]++ : counts[1]++;
 
 }
 
-void AH(unsigned long int counts[3], unsigned long long int ba, unsigned long long int ta,
+void AH(unsigned long long int counts[3], unsigned long long int ba, unsigned long long int ta,
          bool T, int hash[1024], unsigned long long int bdict[1024], unsigned long long int tdict[1024], char type) {
 
     unsigned int loc = (type == 'B') ? ba & 1023 : (type == 'T') ? ta & 1023 : ((ba & 31) << 5) + (ta & 31);
@@ -20,7 +19,7 @@ void AH(unsigned long int counts[3], unsigned long long int ba, unsigned long lo
 
 }
 
-void COL(unsigned long int counts[3], unsigned long long int ba, unsigned long long int ta,
+void COL(unsigned long long int counts[3], unsigned long long int ba, unsigned long long int ta,
          bool T, int hash[1024], unsigned long long int bdict[1024], unsigned long long int tdict[1024]) {
 
     unsigned int loc = ba & 1023;
@@ -32,7 +31,7 @@ void COL(unsigned long int counts[3], unsigned long long int ba, unsigned long l
 
 }
 
-void SAT(unsigned long int counts[3], unsigned long long int ba, unsigned long long int ta,
+void SAT(unsigned long long int counts[3], unsigned long long int ba, unsigned long long int ta,
          bool T, int hash[1024], unsigned long long int bdict[1024], unsigned long long int tdict[1024]) {
 
     unsigned int loc = ba & 1023;
@@ -45,7 +44,7 @@ void SAT(unsigned long int counts[3], unsigned long long int ba, unsigned long l
 
 }
 
-void TWO(unsigned long int counts[3], unsigned long long int ba, unsigned long long int ta,
+void TWO(unsigned long long int counts[3], unsigned long long int ba, unsigned long long int ta,
          bool T, int hash[1024], int pred[32],
          unsigned long long int bdict[1024], unsigned long long int tdict[1024]) {
 
@@ -63,7 +62,7 @@ void TWO(unsigned long int counts[3], unsigned long long int ba, unsigned long l
 int main(int argc, char* argv[]) {
 
     if (argc > 1) { return 1; }
-    unsigned long int counts[7][3] = {0};
+    unsigned long long int counts[7][3] = {0};
 
     int bah_hash[1024] = {0};
     unsigned long long int bah_bdict[1024] = {0}, bah_tdict[1024] = {0};
